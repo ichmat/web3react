@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -13,6 +13,8 @@ import {MyContractContext} from "../lib/MyContractContext";
 const Home = (props) => {
   const MyContract = useContext(MyContractContext);
 
+  const [txtInfo, setTxtInfo] = useState<string>("loading contract ...");
+  
   const handleAction = () => {
     // Do some actions here...
   };
@@ -21,11 +23,12 @@ const Home = (props) => {
     MyContract
       ?.deployed()
       ?.then(async function(instance) {
-        // Do something with instance...
+        setTxtInfo("contract loaded !");
       })
       ?.catch(e => {
         // Failed to load web3, accounts, or contract. Check console for details.
         // console.error(e);
+        setTxtInfo("error");
       });
   },);
 
@@ -53,7 +56,7 @@ const Home = (props) => {
                 />
               </Typography>
               <Typography variant="h6" align="center" gutterBottom>
-                Welcome to React+Mui truffle box
+              {txtInfo}
               </Typography>
               <Button
                 size="large"
