@@ -65,7 +65,7 @@ module.exports = {
     // },
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
-    ropsten: {
+    mumbai: {
       provider: () => new HDWalletProvider(process.env.PASS_PHRASE, `https://polygon-mumbai.g.alchemy.com/v2/0YrZm_7mWRo7jsu42K4Hs9B5PeRVG-G5`),
       network_id: 80001,       // Ropsten's id
       gas: 5500000,        // Ropsten has a lower block limit than mainnet

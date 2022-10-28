@@ -46,7 +46,7 @@ const Home = (props) => {
       ?.then(async function(instance) {
         setContractInstance(instance);
         setIsLoaded(true);
-        console.log(instance);
+        console.log(await instance._owner());
       })
       ?.catch(e => {
         // Failed to load web3, accounts, or contract. Check console for details.
@@ -55,6 +55,19 @@ const Home = (props) => {
         console.log('fail loading');
       });
   }, []);
+
+  let isOwner = false;
+
+  useEffect(() => {
+    if(contractInstance && account){
+      contractInstance._owner().then((value) => {
+        console.log(value, account);
+        if(value == account[0]){
+          isOwner = true;
+        };
+      })
+    }
+  }, [contractInstance, account]);
 
   return (
     <ThemeProvider theme={createTheme(AppTheme)}>
@@ -80,13 +93,16 @@ const Home = (props) => {
                 />
               </Typography>
               <Typography variant="h6" align="center" gutterBottom>
-                {(isLoaded && accountLoaded) ? (
+                {(isLoaded && accountLoaded && isOwner) ? (
                   <Stack> 
-                    <Button>Button 1</Button>
-                    <Button>Button 2</Button>
+                    <Button>You are the owner</Button>
                   </Stack>
                 ) 
-                : ('') }
+                : ( 
+                <Stack> 
+                  <Button>You are not the owner</Button>
+                </Stack>
+                ) }
               </Typography>
             </Stack>
           </Grid>
