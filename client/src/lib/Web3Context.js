@@ -9,7 +9,7 @@ const getLocalProvider = () => {
       .WebsocketProvider("ws://localhost:7545")
   );
 }
-
+//127.0.0.1:8545
 const getProvider = async () => {
   try {
     // Wait for loading completion to avoid race conditions with web3 injection timing.

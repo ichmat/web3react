@@ -2,7 +2,7 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 contract Marketplace{
-    constructor() {
+    constructor() public{
         _owner = msg.sender;
         status = ShippingStatus.Pending;
     }
@@ -20,7 +20,7 @@ contract Marketplace{
 
     ShippingStatus private status;
 
-    address private _owner;
+    address public _owner;
 
     event PackageShipped();
     event MissionComplete();

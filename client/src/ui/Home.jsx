@@ -1,36 +1,60 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState,useCallback } from "react";
 import {
   Box,
   Grid,
   Button,
   Typography,
   createTheme,
-  ThemeProvider, Stack
+  ThemeProvider, Stack,
+  TextField
 } from "@mui/material";
 import {AppTheme} from "../lib/theme";
 import {MyContractContext} from "../lib/MyContractContext";
+import {Web3Context} from "../lib/Web3Context";
 
 const Home = (props) => {
   const MyContract = useContext(MyContractContext);
+  const web3Context = useContext(Web3Context);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [accountLoaded, setAccountLoaded] = useState(false);
+  const [account, setAccount] = useState();
+  const [contractInstance, setContractInstance] = useState(null);
 
-  const [txtInfo, setTxtInfo] = useState<string>("loading contract ...");
-  
-  const handleAction = () => {
-    // Do some actions here...
-  };
+  const initConfig = useCallback(() => {
+    web3Context.eth.requestAccounts((error, coinbaseAddress) => {
+      if (error) {
+        setAccount(null);
+        setAccountLoaded(true);
+        return console.error(error);
+      }
+      if (coinbaseAddress !== account){
+        setAccount(coinbaseAddress);
+        setAccountLoaded(true);
+      }
+    });
+  }, [account, web3Context.eth]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      initConfig();
+    }, 500);
+  }, [])
 
   useEffect(() => {
     MyContract
       ?.deployed()
       ?.then(async function(instance) {
-        setTxtInfo("contract loaded !");
+        setContractInstance(instance);
+        setIsLoaded(true);
+        console.log(instance);
       })
       ?.catch(e => {
         // Failed to load web3, accounts, or contract. Check console for details.
-        // console.error(e);
-        setTxtInfo("error");
+        console.error(e);
+        setIsLoaded(true);
+        console.log('fail loading');
       });
-  },);
+  }, []);
 
   return (
     <ThemeProvider theme={createTheme(AppTheme)}>
@@ -56,19 +80,14 @@ const Home = (props) => {
                 />
               </Typography>
               <Typography variant="h6" align="center" gutterBottom>
-              {txtInfo}
+                {(isLoaded && accountLoaded) ? (
+                  <Stack> 
+                    <Button>Button 1</Button>
+                    <Button>Button 2</Button>
+                  </Stack>
+                ) 
+                : ('') }
               </Typography>
-              <Button
-                size="large"
-                target="_blank"
-                color="primary"
-                disableElevation
-                variant="contained"
-                onClick={handleAction}
-                href={'https://trufflesuite.com/docs/truffle/'}
-              >
-                Get started with truffle doc
-              </Button>
             </Stack>
           </Grid>
         </Grid>
